@@ -46,9 +46,7 @@ let WassupRow = props =>
 
 let WassupList = props => 
     <div>
-        {props.wassups.map(wassup => 
-            <WassupRow props={props} wassup={wassup} key={wassup.id}/>)
-    }
+        {props.wassups.map(wassup => <WassupRow props={props} wassup={wassup} key={wassup.id}/>)}
     </div>;
 
 class WassupForm extends React.Component {
@@ -63,19 +61,14 @@ class WassupForm extends React.Component {
         let handleSubmit = (event) => {
             event.preventDefault();
             this.props.addWassup({ body: this.state.newWassup, userName: this.state.user });
-            this.setState({ newWassup: "", user: "" });
+            this.setState({ newWassup: "" });
         }
-        return 
-        <form class="input-fields" onsubmit={handleSubmit}>
-            {/* h('input', { type: "text", placeholder: "What's Up?", value: this.state.newWassup,
-                onChange: (event) => {
-                    this.setState({ newWassup: event.target.value })
-                }}),
-            h('input', { type: "text", placeholder: "Username", value: this.state.user,
-                onChange: (event) => {
-                    this.setState({ user: event.target.value })
-            }}),
-            h('input', { type: 'submit', value: "Post" }) */}
+        let handleNewWassup = (event) => this.setState({ newWassup: event.target.value });
+        let handleNewUser = (event) => this.setState({ user: event.target.value });
+        return <form className="input-fields" onSubmit={handleSubmit}>
+            <input type="text" placeholder="What's up?" value={this.state.newWassup} onChange={handleNewWassup}/>
+            <input type="text" placeholder="Username" value={this.state.user} onChange={handleNewUser}/>
+            <input type='submit' value="Post"/>
         </form>
     }
 }
@@ -85,13 +78,13 @@ class Homepage extends React.Component {
         super(props);
         this.state = {
             wassups: wassups,
-            id: 7
+            id: 8
         }
     }
     render() {
         let addWassup = (props) => {
             this.setState({
-                id: this.state.id + 1
+                id: this.state.id += 1
             })
             this.setState({ 
                 wassups: [
@@ -103,14 +96,14 @@ class Homepage extends React.Component {
                 ].concat(this.state.wassups)
              })
         }
-        return h('div', { className: 'homepage'}, 
-            h('h1', {}, 'Wassup'),
-            h(WassupForm, { addWassup: addWassup }),
-            h(WassupList, { wassups: this.state.wassups })
-        )
+        return <div className="homepage">
+            <h1>Wassup</h1>
+            <WassupForm addWassup={addWassup}/>
+            <WassupList wassups={this.state.wassups}/>
+        </div>
     }
  }
 
  ReactDOM.render(
-     h(Homepage), document.querySelector('.react-root')
+     <Homepage></Homepage>, document.querySelector('.react-root')
  );
