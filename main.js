@@ -37,20 +37,19 @@ const wassups = [
     }
 ]
 
-let WassupRow = props => h('div', { className: 'rows'}, 
-    h('h3', {}, props.wassup.body),
-    h('p', { className: "author" }, `- ${props.wassup.userName}`)
-);
+let WassupRow = props => 
+    <div className='rows'>
+        <h3>{props.wassup.body}</h3>
+        <p className="author">-{props.wassup.userName}</p>
+    </div>;
 
 
-let WassupList = props => h('div', {}, 
-    props.wassups.map(wassup => 
-        h(WassupRow, 
-            { props: props, wassup: wassup, key: wassup.id }
-        )
-    )
-);
-
+let WassupList = props => 
+    <div>
+        {props.wassups.map(wassup => 
+            <WassupRow props={props} wassup={wassup} key={wassup.id}/>)
+    }
+    </div>;
 
 class WassupForm extends React.Component {
     constructor(props) {
@@ -61,14 +60,14 @@ class WassupForm extends React.Component {
         }
     }
     render() {
-        return h('form', { className: 'input-fields',
-            onSubmit: (event) => {
-                event.preventDefault();
-                this.props.addWassup({ body: this.state.newWassup, userName: this.state.user });
-                this.setState({ newWassup: "", user: "" });
-            }
-        },
-            h('input', { type: "text", placeholder: "What's Up?", value: this.state.newWassup,
+        let handleSubmit = (event) => {
+            event.preventDefault();
+            this.props.addWassup({ body: this.state.newWassup, userName: this.state.user });
+            this.setState({ newWassup: "", user: "" });
+        }
+        return 
+        <form class="input-fields" onsubmit={handleSubmit}>
+            {/* h('input', { type: "text", placeholder: "What's Up?", value: this.state.newWassup,
                 onChange: (event) => {
                     this.setState({ newWassup: event.target.value })
                 }}),
@@ -76,8 +75,8 @@ class WassupForm extends React.Component {
                 onChange: (event) => {
                     this.setState({ user: event.target.value })
             }}),
-            h('input', { type: 'submit', value: "Post" })
-);
+            h('input', { type: 'submit', value: "Post" }) */}
+        </form>
     }
 }
 
