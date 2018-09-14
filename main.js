@@ -1,52 +1,53 @@
-const h = React.createElement;
-const wassups = [ 
-    {
-        "userName": 'Michael',
-        "id": 1,
-        "body": "If I had a gun with two bullets and I was in a room with Hitler, Bin Laden, and Toby, I would shoot Toby twice.",
-    },
-    {
-        "userName": 'Jim',
-        "id": 2,
-        "body": "Beets, Bears, Battlestar Galactica."
-    },
-    {
-        "userName": 'Kelly',
-        "id": 3,
-        "body": "I have alot of questions. Number one, how dare you?"
-    },
-    {
-        "userName": 'Andy',
-        "id": 4,
-        "body": "Sorry I annoyed you with my friendship."
-    },
-    {
-        "userName": 'Pam',
-        "id": 5,
-        "body": "I feel God in this Chili’s tonight."
-    },
-    {
-        "userName": 'Dwight',
-        "id": 6,
-        "body": "Whenever I'm about to do something, I think, 'Would an idiot do that?' And if they would, I do not do that thing."
-    },
-    {
-        "userName": "Michael",
-        "id": 8,
-        "body": "Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me."
-    }
-]
+// const wassups = [ 
+//     {
+//         "userName": 'Michael',
+//         "id": 1,
+//         "body": "If I had a gun with two bullets and I was in a room with Hitler, Bin Laden, and Toby, I would shoot Toby twice.",
+//     },
+//     {
+//         "userName": 'Jim',
+//         "id": 2,
+//         "body": "Beets, Bears, Battlestar Galactica."
+//     },
+//     {
+//         "userName": 'Kelly',
+//         "id": 3,
+//         "body": "I have alot of questions. Number one, how dare you?"
+//     },
+//     {
+//         "userName": 'Andy',
+//         "id": 4,
+//         "body": "Sorry I annoyed you with my friendship."
+//     },
+//     {
+//         "userName": 'Pam',
+//         "id": 5,
+//         "body": "I feel God in this Chili’s tonight."
+//     },
+//     {
+//         "userName": 'Dwight',
+//         "id": 6,
+//         "body": "Whenever I'm about to do something, I think, 'Would an idiot do that?' And if they would, I do not do that thing."
+//     },
+//     {
+//         "userName": "Michael",
+//         "id": 8,
+//         "body": "Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me."
+//     }
+// ]
 
 let WassupRow = props => 
     <div className='rows'>
-        <h3>{props.wassup.body}</h3>
-        <p className="author">-{props.wassup.userName}</p>
+        <h3>{props.wassup.content}</h3>
+        <p className="author">-{props.wassup.user}</p>
     </div>;
 
 
 let WassupList = props => 
     <div>
-        {props.wassups.map(wassup => <WassupRow props={props} wassup={wassup} key={wassup.id}/>)}
+        {props.wassups.map(wassup => 
+<WassupRow props={props} wassup={wassup} key={wassup.id}/>)
+    }
     </div>;
 
 class WassupForm extends React.Component {
@@ -60,7 +61,7 @@ class WassupForm extends React.Component {
     render() {
         let handleSubmit = (event) => {
             event.preventDefault();
-            this.props.addWassup({ body: this.state.newWassup, userName: this.state.user });
+            this.props.addWassup({ content: this.state.newWassup, user: this.state.user });
             this.setState({ newWassup: "" });
         }
         let handleNewWassup = (event) => this.setState({ newWassup: event.target.value });
@@ -77,9 +78,18 @@ class Homepage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            wassups: wassups,
-            id: 8
+            wassups: [],
+            id: 4
         }
+    }
+    componentDidMount() {
+        fetch('http://0.tcp.ngrok.io:18229/wassups.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(wassups => {
+                this.setState({ wassups: wassups })
+             });
     }
     render() {
         let addWassup = (props) => {
@@ -89,9 +99,9 @@ class Homepage extends React.Component {
             this.setState({ 
                 wassups: [
                     {
-                        userName: props.userName,
+                        user: props.user,
                         id: this.state.id,
-                        body: props.body
+                        content: props.content
                     }
                 ].concat(this.state.wassups)
              })
