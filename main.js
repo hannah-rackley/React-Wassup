@@ -50,7 +50,16 @@ let WassupList = props =>
     }
     </div>;
 
-class WassupForm extends React.Component {
+let WassupForm = (props) => {
+    return (
+    <form className="input-fields" onSubmit={props.handleSubmit}>
+        <input type="text" placeholder="What's up?" value={props.newWassup} onChange={props.handleNewWassup}/>
+        <input type="text" placeholder="Username" value={props.user} onChange={props.handleNewUser}/>
+        <input type='submit' value="Post"/>
+    </form>)
+}
+
+class WassupFormContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -65,16 +74,21 @@ class WassupForm extends React.Component {
             this.setState({ newWassup: "" });
         }
         let handleNewWassup = (event) => this.setState({ newWassup: event.target.value });
-        let handleNewUser = (event) => this.setState({ user: event.target.value });
-        return <form className="input-fields" onSubmit={handleSubmit}>
-            <input type="text" placeholder="What's up?" value={this.state.newWassup} onChange={handleNewWassup}/>
-            <input type="text" placeholder="Username" value={this.state.user} onChange={handleNewUser}/>
-            <input type='submit' value="Post"/>
-        </form>
+        let handleNewUser = (event) => this.setState({ user: event.target.value })
+        return <WassupForm handleSubmit={handleSubmit} handleNewUser={handleNewUser} handleNewWassup={handleNewWassup} user={this.state.user} newWassup={this.state.newWassup}/>
     }
 }
 
-class Homepage extends React.Component {
+let Homepage = props => {
+    return (
+    <div className="homepage">
+        <h1>Wassup</h1>
+        <WassupFormContainer addWassup={props.addWassup}/>
+        <WassupList wassups={props.wassups}/>
+    </div>)
+}
+
+class HomepageContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -83,7 +97,7 @@ class Homepage extends React.Component {
         }
     }
     componentDidMount() {
-        fetch('http://0.tcp.ngrok.io:18229/wassups.json')
+        fetch('http://0.tcp.ngrok.io:11971/wassups.json')
             .then(response => {
                 return response.json();
             })
@@ -106,14 +120,10 @@ class Homepage extends React.Component {
                 ].concat(this.state.wassups)
              })
         }
-        return <div className="homepage">
-            <h1>Wassup</h1>
-            <WassupForm addWassup={addWassup}/>
-            <WassupList wassups={this.state.wassups}/>
-        </div>
+        return <Homepage addWassup={addWassup} wassups={this.state.wassups}/>;
     }
  }
 
  ReactDOM.render(
-     <Homepage></Homepage>, document.querySelector('.react-root')
+     <HomepageContainer></HomepageContainer>, document.querySelector('.react-root')
  );
